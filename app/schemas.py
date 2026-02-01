@@ -23,7 +23,7 @@ class AvaliacaoOut(AvaliacaoBase):
     filme_id: UUID
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Filme Schemas
@@ -54,7 +54,7 @@ class FilmeOut(FilmeBase):
     usuarios_favoritaram: Optional[List[UUID]] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Usuário Schemas
@@ -64,7 +64,7 @@ class UsuarioBase(BaseModel):
     data_nascimento: date
 
 class UsuarioCreate(UsuarioBase):
-    senha: str
+    senha: str = Field(..., max_length=72)
 
 class UsuarioUpdate(BaseModel):
     nome: Optional[str] = None
@@ -79,4 +79,4 @@ class UsuarioOut(UsuarioBase):
     filmes_em_espera: Optional[List[FilmeOut]] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True

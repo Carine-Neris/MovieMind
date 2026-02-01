@@ -15,6 +15,8 @@ import os
 
 router = APIRouter()
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/usuarios/login")
+
 # Dependency
 def get_db():
     db = next(database.get_db())
