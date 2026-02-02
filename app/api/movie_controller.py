@@ -20,12 +20,24 @@ def get_db():
 
 @router.post("/", response_model=schemas.FilmeOut, status_code=status.HTTP_201_CREATED)
 def criar_filme(filme: schemas.FilmeCreate, db: Session = Depends(database.get_db)):
-    return MovieService.create_movie(db, filme)
+    db_filme = MovieService.create_movie(db, filme)
+    # Converte elenco de string para lista antes de retornar
+    if db_filme.elenco:
+        db_filme.elenco = [e.strip() for e in db_filme.elenco.split(",")]
+    else:
+        db_filme.elenco = []
+    return db_filme
 
 
 @router.get("/", response_model=List[schemas.FilmeOut])
 def listar_filmes(skip: int = 0, limit: int = 20, db: Session = Depends(database.get_db)):
-    return MovieService.list_movies(db, skip=skip, limit=limit)
+    filmes = MovieService.list_movies(db, skip=skip, limit=limit)
+    for filme in filmes:
+        if filme.elenco:
+            filme.elenco = [e.strip() for e in filme.elenco.split(",")]
+        else:
+            filme.elenco = []
+    return filmes
 
 
 @router.get("/{filme_id}", response_model=schemas.FilmeOut)
@@ -33,6 +45,10 @@ def obter_filme(filme_id: UUID, db: Session = Depends(database.get_db)):
     filme = MovieService.get_movie(db, filme_id)
     if not filme:
         raise HTTPException(status_code=404, detail="Filme não encontrado")
+    if filme.elenco:
+        filme.elenco = [e.strip() for e in filme.elenco.split(",")]
+    else:
+        filme.elenco = []
     return filme
 
 

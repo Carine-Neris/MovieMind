@@ -23,7 +23,12 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+    # Log temporário para inspecionar o valor da senha recebida
+    print(f"[DEBUG] Valor recebido em get_password_hash: {repr(password)} (type: {type(password)})")
+    # Trunca a senha para no máximo 72 bytes (bcrypt limitation)
+    password_bytes = password.encode("utf-8")[:72]
+    password_truncated = password_bytes.decode("utf-8", errors="ignore")
+    return pwd_context.hash(password_truncated)
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
