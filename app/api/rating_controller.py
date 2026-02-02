@@ -9,12 +9,7 @@ from app.services.rating_service import RatingService
 
 router = APIRouter()
 
-def get_db():
-    db = next(database.get_db())
-    try:
-        yield db
-    finally:
-        db.close()
+from app.database import get_db
 
 @router.post("/", response_model=schemas.AvaliacaoOut, status_code=status.HTTP_201_CREATED)
 def criar_avaliacao(avaliacao: schemas.AvaliacaoCreate, db: Session = Depends(database.get_db)):

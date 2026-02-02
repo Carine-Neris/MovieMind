@@ -10,12 +10,7 @@ from app.services.movie_service import MovieService
 router = APIRouter()
 
 
-def get_db():
-    db = next(database.get_db())
-    try:
-        yield db
-    finally:
-        db.close()
+from app.database import get_db
 
 
 @router.post("/", response_model=schemas.FilmeOut, status_code=status.HTTP_201_CREATED)

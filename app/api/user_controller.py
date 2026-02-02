@@ -18,12 +18,7 @@ router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/usuarios/login")
 
 # Dependency
-def get_db():
-    db = next(database.get_db())
-    try:
-        yield db
-    finally:
-        db.close()
+from app.database import get_db
 
 def get_current_user(token: str = Security(oauth2_scheme), db: database.SessionLocal = Depends(database.get_db)) -> models.Usuario:
     from app.services.auth_service import decode_access_token
